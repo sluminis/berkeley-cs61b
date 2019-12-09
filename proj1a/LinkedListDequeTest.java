@@ -1,3 +1,5 @@
+import org.junit.Test;
+
 /** Performs some basic linked list tests. */
 public class LinkedListDequeTest {
 	
@@ -36,7 +38,7 @@ public class LinkedListDequeTest {
 	public static void addIsEmptySizeTest() {
 		System.out.println("Running add/isEmpty/Size test.");
 		System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
-		LinkedListDeque<String> lld1 = new LinkedListDeque<String>();
+		Deque<String> lld1 = new ArrayDeque<String>();
 
 		boolean passed = checkEmpty(true, lld1.isEmpty());
 
@@ -66,7 +68,7 @@ public class LinkedListDequeTest {
 
 		System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
-		LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+		Deque<Integer> lld1 = new ArrayDeque<>();
 		// should be empty 
 		boolean passed = checkEmpty(true, lld1.isEmpty());
 
@@ -81,9 +83,30 @@ public class LinkedListDequeTest {
 		printTestStatus(passed);
 	}
 
+	@Test
+	public static void hardTest() {
+
+		Deque<Integer> deque = new ArrayDeque<>();
+
+		for (int i=0; i<100000; ++i) {
+			deque.addFirst(i);
+			deque.addLast(i);
+		}
+		
+		System.out.println(deque.size());
+
+		for (int i=0; i<100000; ++i) {
+			deque.removeFirst();
+			deque.removeLast();
+		}
+
+		System.out.println(deque.size());
+	}
+
 	public static void main(String[] args) {
 		System.out.println("Running tests.\n");
 		addIsEmptySizeTest();
 		addRemoveTest();
+		hardTest();
 	}
 } 
