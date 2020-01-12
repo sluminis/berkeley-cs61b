@@ -17,7 +17,7 @@ public class PrintHeapDemo {
         }
 
         for (int i = 1; i < heap.length; i++) {
-            System.out.printf("%d ", heap[i]);
+            System.out.print(heap[i] + " ");
             if (i == itemsUntilNext) {
                 System.out.println();
                 level++;
