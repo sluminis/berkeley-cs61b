@@ -1,5 +1,7 @@
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 /** Performs some basic linked list tests. */
 public class LinkedListDequeTest {
 	
@@ -85,7 +87,7 @@ public class LinkedListDequeTest {
 
 	@Test
 	public static void hardTest() {
-
+		ArrayList<Integer> arrayList = new ArrayList<Integer>();
 		Deque<Integer> deque = new ArrayDeque<>();
 
 		for (int i=0; i<100000; ++i) {

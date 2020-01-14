@@ -55,4 +55,13 @@ public class FlightSolverTest {
         assertEquals(65, solver.solve());
     }
 
+    @Test
+    public void attackTest() {
+        int[] startTimes = {10, 20, 30, 40};
+        int[] endTimes = {29, 49, 39, 49};
+        int[] passengerCounts = {1, 2, 3, 4};
+        FlightSolver solver = new FlightSolver(makeFlights(startTimes, endTimes, passengerCounts));
+        assertEquals(6, solver.solve());
+    }
+
 }

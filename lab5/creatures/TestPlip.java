@@ -1,13 +1,18 @@
 package creatures;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.awt.Color;
+import java.util.List;
+
 import huglife.Direction;
 import huglife.Action;
 import huglife.Occupant;
 import huglife.Impassible;
 import huglife.Empty;
+import org.knowm.xchart.internal.chartpart.Plot_;
 
 /** Tests the plip class
  *  @authr FIXME
@@ -32,10 +37,13 @@ public class TestPlip {
 
     @Test
     public void testReplicate() {
-        // TODO
+        Plip p = new Plip(1);
+        Plip p1 = p.replicate();
+        assertEquals(0.5, p.energy(), 0.01);
+        assertEquals(0.5, p1.energy(), 0.01);
     }
 
-    //@Test
+    @Test
     public void testChoose() {
 
         // No empty adjacent spaces; stay.
@@ -99,5 +107,18 @@ public class TestPlip {
 
 
         // We don't have Cloruses yet, so we can't test behavior for when they are nearby right now.
+    }
+
+    @Test
+    public void justATest() {
+        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list1 = new ArrayList<Integer>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        String s = "Hihi";
+        list1.addAll(list.subList(2, list.size()));
+        System.out.println(list1);
     }
 }

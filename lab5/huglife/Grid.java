@@ -49,6 +49,8 @@ public class Grid {
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < N; x++) {
                 occupants[y][x] = new Empty();
+                if (x == 5 && y != 4)
+                    occupants[y][x] = new Impassible();
             }
         }
         moveQueue = new ArrayDeque<Position>();

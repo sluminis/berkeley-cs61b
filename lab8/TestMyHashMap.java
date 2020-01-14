@@ -1,6 +1,9 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /** Tests by Brendan Hu, Spring 2015, revised for 2016 by Josh Hug */
@@ -138,6 +141,18 @@ public class TestMyHashMap {
         studentIDs.put("evil alan", 345);
         assertEquals(345, studentIDs.get("evil alan").intValue());
         assertEquals(studentIDs.get("evil alan"), studentIDs.get("alan"));
+    }
+
+    @Test
+    public void testTableSizeFor() {
+        int result = MyHashMap.tableSizeFor(4);
+        System.out.println(result);
+    }
+
+    @Test
+    public void test() {
+        int ans = Math.floorMod(16, 16);
+        System.out.println(ans);
     }
 
     public static void main(String[] args) {

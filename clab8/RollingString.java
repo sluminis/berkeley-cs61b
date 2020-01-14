@@ -1,3 +1,9 @@
+import edu.princeton.cs.algs4.In;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A String-like class that allows users to add and remove characters in the String
  * in constant time and have a constant-time hash function. Used for the Rabin-Karp
@@ -17,13 +23,24 @@ class RollingString{
      */
     static final int PRIMEBASE = 6113;
 
+    private List<Character> charList = new LinkedList<>();
+
+    private int maxLength;
+
+    private int hash;
+
     /**
      * Initializes a RollingString with a current value of String s.
      * s must be the same length as the maximum length.
      */
     public RollingString(String s, int length) {
         assert(s.length() == length);
-        /* FIX ME */
+        maxLength = length;
+        for (int i = 0; i < s.length(); ++i) {
+            char c = s.charAt(i);
+            charList.add(c);
+            hash = Math.floorMod(hash*UNIQUECHARS + (int) c, PRIMEBASE);
+        }
     }
 
     /**
@@ -32,7 +49,13 @@ class RollingString{
      * Should be a constant-time operation.
      */
     public void addChar(char c) {
-        /* FIX ME */
+        if (charList.size() == maxLength) {
+            char removed = charList.remove(0);
+            hash -= (int) removed * safeModPower(UNIQUECHARS, maxLength - 1);
+            hash = Math.floorMod(hash, PRIMEBASE);
+        }
+        charList.add(c);
+        hash = Math.floorMod(hash * UNIQUECHARS + (int) c, PRIMEBASE);
     }
 
 
@@ -43,8 +66,10 @@ class RollingString{
      */
     public String toString() {
         StringBuilder strb = new StringBuilder();
-        /* FIX ME */
-        return "";
+        for (char c : charList) {
+            strb.append(c);
+        }
+        return strb.toString();
     }
 
     /**
@@ -52,8 +77,7 @@ class RollingString{
      * Should be a constant-time operation.
      */
     public int length() {
-        /* FIX ME */
-        return -1;
+        return charList.size();
     }
 
 
@@ -64,8 +88,9 @@ class RollingString{
      */
     @Override
     public boolean equals(Object o) {
-        /* FIX ME */
-        return false;
+        if (null == o) return false;
+        if (!getClass().equals(o.getClass())) return false;
+        return charList.equals(((RollingString) o).charList);
     }
 
     /**
@@ -74,7 +99,18 @@ class RollingString{
      */
     @Override
     public int hashCode() {
-        /* FIX ME */
-        return -1;
+        return hash;
+    }
+
+    static int safeModPower(int a, int b) {
+        int base = a;
+        int ans = 1;
+        while (b > 0) {
+            if ((b & 1) == 1)
+                ans = (ans * base) % PRIMEBASE;
+            base = (base * base) % PRIMEBASE;
+            b = b >>> 1;
+        }
+        return ans;
     }
 }
