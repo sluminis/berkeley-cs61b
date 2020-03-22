@@ -1,6 +1,7 @@
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,6 +16,7 @@ public class SeparableEnemySolverTests {
         g.connect("C", "D");
         SeparableEnemySolver solver = new SeparableEnemySolver(g);
         assertEquals(false, solver.isSeparable());
+        System.out.println(solver.separateGroup());
     }
 
     @Test
@@ -35,12 +37,14 @@ public class SeparableEnemySolverTests {
         g.connect("E", "C");
         SeparableEnemySolver solver = new SeparableEnemySolver(g);
         assertEquals(false, solver.isSeparable());
+        System.out.println(solver.separateGroup());
     }
 
     @Test
     public void input1() throws FileNotFoundException {
         SeparableEnemySolver solver = new SeparableEnemySolver("input/party1");
         assertEquals(true, solver.isSeparable());
+        System.out.println(solver.separateGroup());
     }
 
     @Test
@@ -53,12 +57,33 @@ public class SeparableEnemySolverTests {
     public void input3() throws FileNotFoundException {
         SeparableEnemySolver solver = new SeparableEnemySolver("input/party3");
         assertEquals(false, solver.isSeparable());
+        System.out.println(solver.separateGroup());
     }
 
     @Test
     public void input4() throws FileNotFoundException {
         SeparableEnemySolver solver = new SeparableEnemySolver("input/party4");
         assertEquals(false, solver.isSeparable());
+    }
+
+    @Test
+    public void input5() throws FileNotFoundException {
+        SeparableEnemySolver solver = new SeparableEnemySolver("input/party5");
+        System.out.println(solver.separateGroup());
+    }
+
+    @Test
+    public void testSet() {
+        Set<Integer> set = new TreeSet<>(Arrays.asList(1, 2, 3, 4, 5, 6));
+
+        Iterator<Integer> iterator = set.iterator();
+        while (iterator.hasNext()) {
+            int i = iterator.next();
+            System.out.println(i);
+            set.remove(i);
+            iterator = set.iterator();
+        }
+
     }
 
 }

@@ -5,6 +5,7 @@ import bearmaps.hw4.WeightedEdge;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Integer Hop puzzle implemented as a graph.
@@ -27,6 +28,6 @@ public class IntegerHopGraph implements AStarGraph<Integer> {
     public double estimatedDistanceToGoal(Integer s, Integer goal) {
         // possibly fun challenge: Try to find an admissible heuristic that
         // speeds up your search. This is tough!
-        return 0;
+        return 0.;
     }
 }

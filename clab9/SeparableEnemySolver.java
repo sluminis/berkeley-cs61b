@@ -8,7 +8,7 @@ public class SeparableEnemySolver {
 
     /**
      * Creates a SeparableEnemySolver for a file with name filename. Enemy
-     * relationships are biderectional (if A is an enemy of B, B is an enemy of A).
+     * relationships are bidirectional (if A is an enemy of B, B is an enemy of A).
      */
     SeparableEnemySolver(String filename) throws java.io.FileNotFoundException {
         this.g = graphFromFile(filename);
@@ -23,10 +23,66 @@ public class SeparableEnemySolver {
      * Returns true if input is separable, false otherwise.
      */
     public boolean isSeparable() {
-        // TODO: Fix me
-        return false;
+        Map<String, Integer> group = new HashMap<>();
+        boolean answer = true;
+        for (String person : g.labels()) {
+            answer &= isSeparableHelper("", person, group);
+        }
+        //System.out.println(group);
+        return answer;
     }
 
+    private boolean isSeparableHelper(String predecessor, String successor, Map<String, Integer> group) {
+        //System.out.println(String.format("%s to %s", predecessor, successor));
+        int predecessorGroup = group.getOrDefault(predecessor, 1);
+        if (group.containsKey(successor)) {
+            int successorGroup = group.get(successor);
+            return predecessor.isEmpty() || predecessorGroup != successorGroup;
+        }
+        group.put(successor, predecessorGroup ^ 1);
+        for (String neighbor : g.neighbors(successor)) {
+            if (!neighbor.equals(predecessor) && !isSeparableHelper(successor, neighbor, group)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    transient Set<Set<String>> answerSet;
+    public Set<Set<String>> separateGroup() {
+        answerSet = new HashSet<>();
+        Set<String> clique = new HashSet<>();
+        Set<String> potential = g.labels();
+        Set<String> exclude = new HashSet<>();
+
+        bronKerbosch(clique, potential, exclude);
+
+        return answerSet;
+    }
+
+    private void bronKerbosch(Set<String> clique, Set<String> potential, Set<String> exclude) {
+        if (potential.isEmpty() && exclude.isEmpty()) {
+            answerSet.add(new HashSet<>(clique));
+        }
+
+        Iterator<String> iterator = potential.iterator();
+        while (iterator.hasNext()) {
+            String node = iterator.next();
+
+            clique.add(node);
+            Set<String> newPotential = g.neighbors(node);
+            newPotential.retainAll(potential);
+            Set<String> newExclude = g.neighbors(node);
+            newExclude.retainAll((exclude));
+
+            bronKerbosch(clique, newPotential, newExclude);
+
+            clique.remove(node);
+            exclude.add(node);
+            potential.remove(node);
+            iterator = potential.iterator();
+        }
+    }
 
     /* HELPERS FOR READING IN CSV FILES. */
 

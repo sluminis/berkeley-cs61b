@@ -29,6 +29,7 @@ public class LazySolver<Vertex> implements ShortestPathsSolver<Vertex> {
                 return;
             }
         }
+
         outcome = SolverOutcome.UNSOLVABLE;
         timeSpent = sw.elapsedTime();
     }

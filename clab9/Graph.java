@@ -61,7 +61,7 @@ public class Graph {
         return toReturn;
     }
 
-    class Node {
+    static class Node {
         private String label;
 
         private Set<Node> neighbors;

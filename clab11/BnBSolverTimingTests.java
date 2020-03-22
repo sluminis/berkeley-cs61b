@@ -101,6 +101,6 @@ public class BnBSolverTimingTests {
     }
 
     public static void main(String[] args) {
-        plotTimes(16);
+        plotTimes(17);
     }
 }

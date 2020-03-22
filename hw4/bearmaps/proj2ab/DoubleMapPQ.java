@@ -1,12 +1,7 @@
 package bearmaps.proj2ab;
 
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 
 /** This is a PQ implementation you can use if you don't want to use
