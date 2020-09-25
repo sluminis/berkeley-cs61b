@@ -58,10 +58,20 @@ public class RoutingAPIHandler extends APIRouteHandler<Map<String, Double>, Map<
      */
     @Override
     protected Map<String, Object> processRequest(Map<String, Double> requestParams, Response response) {
+        System.out.println(String.format("Route parameters: (%f, %f) -> (%f, %f)",
+                requestParams.get("start_lon"), requestParams.get("start_lat"),
+                requestParams.get("end_lon"), requestParams.get("end_lat")));
+
+        double lonOffset = 0;
+        double latOffset = 0;
+        double startLon = requestParams.get("start_lon") + lonOffset;
+        double startLat = requestParams.get("start_lat") + latOffset;
+        double endLon = requestParams.get("end_lon") + lonOffset;
+        double endLat = requestParams.get("end_lat") + latOffset;
         List<Long> route = Router.shortestPath(
                 SEMANTIC_STREET_GRAPH,
-                requestParams.get("start_lon"), requestParams.get("start_lat"),
-                requestParams.get("end_lon"), requestParams.get("end_lat"));
+                startLon, startLat,
+                endLon, endLat);
         ROUTE_LIST.addAll(route);
         String directions = getDirectionsText();
 

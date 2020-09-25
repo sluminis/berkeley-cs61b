@@ -35,11 +35,14 @@ public class RandomWorldDemo {
      *  chance of being empty space.
      */
     private static TETile randomTile() {
-        int tileNum = RANDOM.nextInt(3);
+        int tileNum = RANDOM.nextInt(6);
         switch (tileNum) {
             case 0: return Tileset.WALL;
             case 1: return Tileset.FLOWER;
-            case 2: return Tileset.NOTHING;
+            case 2: return Tileset.GRASS;
+            case 3: return Tileset.MOUNTAIN;
+            case 4: return Tileset.SAND;
+            case 5: return Tileset.WATER;
             default: return Tileset.NOTHING;
         }
     }

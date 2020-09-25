@@ -45,6 +45,14 @@ public class TestRasterAPIHandler {
             Map<String, Double> params = testParams.get(i);
             Map<String, Object> actual = rasterer.processRequest(params, null);
             Map<String, Object> expected = expectedResults.get(i);
+
+//            System.out.println("actual: " + mapToString(actual));
+//            System.out.println("expected: " + mapToString(expected));
+//            System.out.println("difference: " + (((Double)expected.get("raster_lr_lat") - (Double) actual.get("raster_lr_lat"))
+//                    / RasterAPIHandler.mLonDPPList.get(4) / 256));
+//            System.out.println("difference: " + (((Double)expected.get("raster_ul_lat") - (Double) actual.get("raster_ul_lat"))
+//                    / RasterAPIHandler.mLonDPPList.get(4) / 256));
+
             String msg = "Your results did not match the expected results for input "
                          + mapToString(params) + ".\n";
             checkParamsMap(msg, expected, actual);

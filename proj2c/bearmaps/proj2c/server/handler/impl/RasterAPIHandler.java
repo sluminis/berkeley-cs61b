@@ -12,10 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static bearmaps.proj2c.utils.Constants.SEMANTIC_STREET_GRAPH;
 import static bearmaps.proj2c.utils.Constants.ROUTE_LIST;
@@ -45,6 +43,25 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
     private static final String[] REQUIRED_RASTER_RESULT_PARAMS = {"render_grid", "raster_ul_lon",
             "raster_ul_lat", "raster_lr_lon", "raster_lr_lat", "depth", "query_success"};
 
+    private static final int MAX_DEPTH = 7;
+
+    public static List<Double> mLonDPPList;
+    static {
+        mLonDPPList = new ArrayList<>();
+        double d0LonDPP = (Constants.ROOT_LRLON - Constants.ROOT_ULLON) / Constants.TILE_SIZE;
+        for (int i = 0; i < MAX_DEPTH + 1; ++i) {
+            mLonDPPList.add(d0LonDPP / (1 << i));
+        }
+    }
+
+    public static List<Double> mLatDPPList;
+    static {
+        mLatDPPList = new ArrayList<>();
+        double d0LatDPP = (Constants.ROOT_ULLAT - Constants.ROOT_LRLAT) / Constants.TILE_SIZE;
+        for (int i = 0; i < MAX_DEPTH + 1; ++i) {
+            mLatDPPList.add(d0LatDPP / (1 << i));
+        }
+    }
 
     @Override
     protected Map<String, Double> parseRequestParams(Request request) {
@@ -87,9 +104,78 @@ public class RasterAPIHandler extends APIRouteHandler<Map<String, Double>, Map<S
         //System.out.println("yo, wanna know the parameters given by the web browser? They are:");
         //System.out.println(requestParams);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented RasterAPIHandler.processRequest, nothing is displayed in "
-                + "your browser.");
+//        System.out.println("Since you haven't implemented RasterAPIHandler.processRequest, nothing is displayed in "
+//                + "your browser.");
+
+        double right = requestParams.get("lrlon");
+        double lower = requestParams.get("lrlat");
+        double left = requestParams.get("ullon");
+        double upper = requestParams.get("ullat");
+        double width = requestParams.get("w");
+//        double height = requestParams.get("h");
+
+        if (left > Constants.ROOT_LRLON || right < Constants.ROOT_ULLON ||
+            upper < Constants.ROOT_LRLAT || lower > Constants.ROOT_ULLAT ) {
+            results.put("query_success", false);
+            return results;
+        }
+
+        double lonDDP = (right - left) / width;
+        int depth = lonDDP2Depth(lonDDP);
+        int leftCol = lon2Column(left, depth);
+        int rightCol = lon2Column(right, depth);
+        int upperRow = lat2Row(upper, depth);
+        int lowerRow = lat2Row(lower, depth);
+
+        int cols = rightCol - leftCol + 1;
+        int rows = lowerRow - upperRow + 1;
+
+        String[][] renderGrid = new String[rows][cols];
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                renderGrid[i][j] = generateFileName(depth, upperRow + i, leftCol + j);
+            }
+        }
+
+        results.put("render_grid", renderGrid);
+
+        double lonPerTile = mLonDPPList.get(depth) * 256;
+        double latPerTile = mLatDPPList.get(depth) * 256;
+        results.put("raster_ul_lon", Constants.ROOT_ULLON + leftCol * lonPerTile);
+        results.put("raster_ul_lat", Constants.ROOT_ULLAT - upperRow * latPerTile);
+        results.put("raster_lr_lon", Constants.ROOT_ULLON + (rightCol + 1) * lonPerTile);
+        results.put("raster_lr_lat", Constants.ROOT_ULLAT - (lowerRow + 1) * latPerTile);
+        results.put("depth", depth);
+        results.put("query_success", true);
         return results;
+    }
+
+    private int lonDDP2Depth(double lonDDP) {
+        int i = 0;
+        for (; i < MAX_DEPTH; ++i) {
+            if (mLonDPPList.get(i) < lonDDP) {
+                break;
+            }
+        }
+        return i;
+    }
+
+    private int lon2Column(double longitude, int depth) {
+        int column = (int) ((longitude - Constants.ROOT_ULLON) / mLonDPPList.get(depth) / Constants.TILE_SIZE);
+        column = Math.max(0, column);
+        column = Math.min((1 << depth) - 1, column);
+        return column;
+    }
+
+    private int lat2Row(double latitude, int depth) {
+        int row = (int) ((Constants.ROOT_ULLAT - latitude) / mLatDPPList.get(depth) / Constants.TILE_SIZE);
+        row = Math.max(0, row);
+        row = Math.min((1 << depth) - 1, row);
+        return row;
+    }
+
+    private String generateFileName(int depth, int row, int col) {
+        return String.format("d%d_x%d_y%d.png", depth, col, row);
     }
 
     @Override
